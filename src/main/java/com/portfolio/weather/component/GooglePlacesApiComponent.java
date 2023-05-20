@@ -3,19 +3,26 @@ package com.portfolio.weather.component;
 import com.google.maps.GeoApiContext;
 import com.google.maps.PlaceAutocompleteRequest;
 import com.google.maps.PlaceAutocompleteRequest.SessionToken;
+import com.google.maps.PlaceDetailsRequest;
 import com.google.maps.PlacesApi;
 import com.google.maps.model.AutocompletePrediction;
+import com.google.maps.model.PlaceDetails;
+import com.portfolio.weather.domain.models.PlaceResponse;
 import com.portfolio.weather.domain.models.PlacesResponse;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-
+@Log4j2
 @Component
 public class GooglePlacesApiComponent {
 
     @Value("${app.apis.google.api-key}")
     private String apiKey;
+
+    @Autowired
+    private PlacesMapperComponent placesMapper;
 
     private GeoApiContext context;
 
@@ -33,8 +40,28 @@ public class GooglePlacesApiComponent {
         PlaceAutocompleteRequest request = PlacesApi.placeAutocomplete(getContext(), query, token);
 
         AutocompletePrediction[] results = request.awaitIgnoreError();
-        return convertTo(results, token);
+
+        return placesMapper.convertTo(results, token);
     }
+
+    public PlaceResponse getPlaceDetails(String placeId) {
+        SessionToken token = new SessionToken();
+        return getPlaceDetails(placeId, token);
+    }
+
+    public PlaceResponse getPlaceDetails(String placeId, String session) {
+        SessionToken token = new SessionToken(session);
+        return getPlaceDetails(placeId, token);
+    }
+
+    private PlaceResponse getPlaceDetails(String placeId, SessionToken token) {
+        PlaceDetailsRequest request = PlacesApi.placeDetails(getContext(), placeId, token);
+
+        PlaceDetails result = request.awaitIgnoreError();
+
+        return placesMapper.convertTo(result);
+    }
+
 
     private GeoApiContext getContext() {
         if (context == null) {
@@ -43,23 +70,6 @@ public class GooglePlacesApiComponent {
                     .build();
         }
         return context;
-    }
-
-    private PlacesResponse convertTo(AutocompletePrediction[] predictions, SessionToken token) {
-        return PlacesResponse.builder()
-                .session(token.toUrlValue())
-                .size(predictions.length)
-                .places(Arrays.stream(predictions)
-                        .map(this::convertTo)
-                        .toList())
-                .build();
-    }
-
-    private PlacesResponse.Place convertTo(AutocompletePrediction prediction) {
-        return PlacesResponse.Place.builder()
-                .placeId(prediction.placeId)
-                .description(prediction.description)
-                .build();
     }
 
 }
