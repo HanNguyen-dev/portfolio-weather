@@ -9,10 +9,14 @@ import com.portfolio.weather.domain.models.ForecastsResponse.CurrentObservation.
 import com.portfolio.weather.domain.models.ForecastsResponse.CurrentObservation.Astronomy;
 import com.portfolio.weather.domain.models.ForecastsResponse.CurrentObservation.Atmosphere;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class WeatherMapperComponent {
+
+    @Value("${app.apis.openweather.icon-base-url}")
+    private String iconBaseUrl;
 
     public ForecastsResponse convertTo(CurrentForecast forecasts) {
         CurrentForecast.CurrentData currentWeather = forecasts.getCurrent();
@@ -37,6 +41,7 @@ public class WeatherMapperComponent {
         Condition condition = Condition.builder()
             .text(currentWeather.getWeather().get(0).getDescription())
             .temperature(currentWeather.getTemp().intValue())
+            .iconUrl(String.format("%s/%s@4x.png", iconBaseUrl, currentWeather.getWeather().get(0).getIcon()))
             .build();
 
         ForecastsResponse.CurrentObservation currentObservation = ForecastsResponse.CurrentObservation.builder()
@@ -53,6 +58,7 @@ public class WeatherMapperComponent {
                     .low(day.getTemp().getMin().intValue())
                     .high(day.getTemp().getMax().intValue())
                     .text(day.getWeather().get(0).getDescription())
+                    .iconUrl(String.format("%s/%s@4x.png", iconBaseUrl, day.getWeather().get(0).getIcon()))
                     .build();
             }).toList();
 

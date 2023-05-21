@@ -63,18 +63,20 @@ public class ForecastsResponse {
             private String text;
             private Integer code;
             private Integer temperature;
+            private String iconUrl;
         }
     }
 
     @Data
     @Builder
     public static class Forecast {
-        public String day;
-        public Integer date;
-        public Integer low;
-        public Integer high;
-        public String text;
-        public Integer code;
+        private String day;
+        private Integer date;
+        private Integer low;
+        private Integer high;
+        private String text;
+        private Integer code;
+        private String iconUrl;
     }
 
 }

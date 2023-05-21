@@ -9,11 +9,13 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 public class OpenWeatherComponent {
+
     final RestTemplate restTemplate;
 
-    @Value("${app.apiKey}")
+    @Value("${app.apis.openweather.api-key}")
     private String apiKey;
-    @Value("${app.baseUrl}")
+
+    @Value("${app.apis.openweather.base-url}")
     private String baseUrl;
 
     public OpenWeatherComponent() {
@@ -21,13 +23,13 @@ public class OpenWeatherComponent {
     }
 
     public CurrentWeather getCurrentWeather(String city) {
-        String url = baseUrl + "weather?q=" + city + "&appid=" + apiKey + "&units=imperial";
+        String url = String.format("%s/weather?q=%s&appid=%s&units=imperial", baseUrl, city, apiKey);
         CurrentWeather currentWeather = restTemplate.getForEntity(url, CurrentWeather.class).getBody();
         return currentWeather;
     }
 
     public CurrentForecast getForecast(Double latitude, Double longitude) {
-        String url = baseUrl + "onecall?lat=" + latitude + "&lon=" + longitude + "&appid=" + apiKey + "&units=imperial";
+        String url = String.format("%s/onecall?units=imperial&lat=%s&lon=%s&appid=%s" , baseUrl, latitude, longitude, apiKey);
         CurrentForecast currentForecast = restTemplate.getForEntity(url, CurrentForecast.class).getBody();
         return currentForecast;
     }
