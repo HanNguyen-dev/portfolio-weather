@@ -6,4 +6,8 @@ public interface IWeatherService {
 
   public ForecastsResponse getForecasts(Double latitude, Double longitude);
 
+  public ForecastsResponse getForecasts(String placeId);
+
+  public ForecastsResponse getForecastsByIp(String ipAddress);
+
 }

@@ -4,11 +4,13 @@ import com.portfolio.weather.domain.interfaces.IWeatherService;
 import com.portfolio.weather.domain.models.ForecastsResponse;
 
 // import com.weather.webservice.error.CityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
@@ -37,11 +39,22 @@ public class WeatherController {
     // }
 
     @GetMapping()
-    public ResponseEntity<ForecastsResponse> getForecasts(@RequestParam() Double lat,
-                                                          @RequestParam() Double lon) {
+    public ResponseEntity<ForecastsResponse> getForecasts(@RequestParam(required = false) Double lat,
+                                                          @RequestParam(required = false) Double lon,
+                                                          HttpServletRequest request) {
+        ForecastsResponse response;
+        if (lat == null && lon == null) {
+            response = weatherService.getForecastsByIp(request.getRemoteAddr());
+        } else {
+            response = weatherService.getForecasts(lat, lon);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
 
-        ForecastsResponse response = weatherService.getForecasts(lat, lon);
+    }
 
+    @GetMapping("/{placeId}")
+    public ResponseEntity<ForecastsResponse> getForecastsByPlaceId(@PathVariable(value = "placeId", required = true) String placeId) {
+        var response = weatherService.getForecasts(placeId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
