@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Log4j2
 @Component
 public class GooglePlacesApiComponent {
@@ -27,7 +29,7 @@ public class GooglePlacesApiComponent {
     private GeoApiContext context;
 
     public PlacesResponse getPlaceAutoComplete(String query, String session) {
-        SessionToken token = new SessionToken(session);
+        SessionToken token = new SessionToken(UUID.fromString(session));
         return getPlaceAutoComplete(query, token);
     }
 
@@ -58,10 +60,8 @@ public class GooglePlacesApiComponent {
         PlaceDetailsRequest request = PlacesApi.placeDetails(getContext(), placeId, token);
 
         PlaceDetails result = request.awaitIgnoreError();
-
         return placesMapper.convertTo(result);
     }
-
 
     private GeoApiContext getContext() {
         if (context == null) {

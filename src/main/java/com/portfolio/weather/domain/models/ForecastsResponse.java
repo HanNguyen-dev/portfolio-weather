@@ -15,6 +15,7 @@ public class ForecastsResponse {
     @Data
     @Builder
     public static class Location {
+        public String name;
         public String city;
         public String region;
         public Integer woeid;
@@ -22,6 +23,7 @@ public class ForecastsResponse {
         public Double lat;
         public Double Long;
         public String timezone_id;
+        public String url;
     }
 
     @Data

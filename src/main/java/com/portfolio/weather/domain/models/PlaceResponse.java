@@ -10,6 +10,7 @@ import java.net.URL;
 public class PlaceResponse {
     private String placeId;
     private String name;
+    private String address;
     private URL url;
     private GeoLocation geoLocation;
 

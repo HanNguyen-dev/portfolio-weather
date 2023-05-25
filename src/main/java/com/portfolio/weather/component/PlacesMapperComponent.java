@@ -16,6 +16,7 @@ public class PlacesMapperComponent {
         return PlaceResponse.builder()
                 .placeId(placeDetails.placeId)
                 .name(placeDetails.name)
+                .address(placeDetails.formattedAddress)
                 .url(placeDetails.url)
                 .geoLocation(PlaceResponse.GeoLocation.builder()
                         .latitude(placeDetails.geometry.location.lat)

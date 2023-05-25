@@ -8,6 +8,8 @@ public interface IWeatherService {
 
   public ForecastsResponse getForecasts(String placeId);
 
+  public ForecastsResponse getForecasts(String placeId, String session);
+
   public ForecastsResponse getForecastsByIp(String ipAddress);
 
 }

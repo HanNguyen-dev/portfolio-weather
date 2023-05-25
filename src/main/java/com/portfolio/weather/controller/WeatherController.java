@@ -53,8 +53,15 @@ public class WeatherController {
     }
 
     @GetMapping("/{placeId}")
-    public ResponseEntity<ForecastsResponse> getForecastsByPlaceId(@PathVariable(value = "placeId", required = true) String placeId) {
+    public ResponseEntity<ForecastsResponse> getForecastsByPlaceId(@PathVariable String placeId) {
         var response = weatherService.getForecasts(placeId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/{placeId}/{session}")
+    public ResponseEntity<ForecastsResponse> getForecastsByPlaceId(@PathVariable String placeId,
+                                                                   @PathVariable String session) {
+        ForecastsResponse response = weatherService.getForecasts(placeId, session);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
