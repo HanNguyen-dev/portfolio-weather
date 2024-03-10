@@ -20,4 +20,14 @@ public class TestController {
         return forwarded;
     }
 
+    @GetMapping("headone")
+    public String getHeadOne(@RequestHeader(value = "X-Head-One", required = false) String headOne) {
+        return headOne;
+    }
+
+    @GetMapping("headtwo")
+    public String getHeadTwo(@RequestHeader(value = "X-Head-Two", required = false) String headTwo) {
+        return headTwo;
+    }
+
 }
